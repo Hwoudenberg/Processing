@@ -22,4 +22,7 @@ void alias() {
     }
   }
 }
+float fractionOfWhite(xStartblock, yStartblock) { 
+  return .5;
+}
 
