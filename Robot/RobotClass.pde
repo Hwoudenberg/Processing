@@ -1,8 +1,3 @@
-
-
-
-
-
 class Robot {
   float y = 0; //location of robot
   float x = 0; //location of robot

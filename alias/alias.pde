@@ -1,28 +1,61 @@
+int numPixels;
 int blockSidePixels = 40;
-int WHITE = color(255);
+int WHITE = color(255, 150, 20);
 int BLACK = color(0);
+
 void setup() {
-  size(400, 400);
+  size(800, 800);
+  numPixels = (width*height);
+}
+void draw() {
   background(255);
+  blockSidePixels = mouseX/10;
+  if (blockSidePixels < 1) {
+    blockSidePixels = 2;
+  }
 
   strokeWeight(width*.1);
   ellipse(width/2, height/2, .8*width, .8*height);
   alias();
 }
+
 void alias() {
-  for (int yStartblock = 0; yStartblock < height; yStartblock += blockSidePixels) {
-    for (int xStartblock = 0; xStartblock < width; xStartblock += blockSidePixels) {
-      float whiteFraction = fractionOfWhite(xStartblock, yStartblock);
+  loadPixels();
+  for (int yStartBlock = 0; yStartBlock < height; yStartBlock += blockSidePixels) {
+    for (int xStartBlock = 0; xStartBlock < width; xStartBlock += blockSidePixels) {
+      float whiteFraction = fractionOfWhite(xStartBlock, yStartBlock);
       if (whiteFraction > .5) {
-        setBlockColor(xStartblock, yStartblock, WHITE);
+        setBlockColor(xStartBlock, yStartBlock, WHITE);
+      } else {
+        setBlockColor(xStartBlock, yStartBlock, BLACK);
       }
-      else {        
-        setBlockColor(xStartblock, yStartblock, BLACK);
-      };
     }
   }
+  updatePixels();
 }
-float fractionOfWhite(xStartblock, yStartblock) { 
-  return .5;
+
+float fractionOfWhite( int xStartBlock, int yStartBlock) {
+  int numberOfPixels=0;
+  for (int y = yStartBlock; y < yStartBlock + blockSidePixels; y++) {
+    for (int x = xStartBlock; x < xStartBlock + blockSidePixels; x++) {
+      int pixelIndex = x+y*width;
+      if (pixelIndex < numPixels) {
+        int clr = pixels[pixelIndex]; //get(x, y);   
+        int grayLevel = (int) (red(clr) + green(clr) + blue(clr));
+        if ( grayLevel > 127) ++numberOfPixels;
+      }
+    }
+  }
+  return ((float)numberOfPixels)/(blockSidePixels*blockSidePixels);
+}
+void setBlockColor( int xStartBlock, int yStartBlock, int clr) {
+  for (int y = yStartBlock; y < yStartBlock + blockSidePixels; y++) {
+    for (int x = xStartBlock; x < xStartBlock + blockSidePixels; x++) {
+      int pixelIndex = x+y*width;
+      if (pixelIndex < numPixels) {
+        pixels[pixelIndex] = clr; //set(x, y, clr);
+      }
+    }
+  }
 }
 
